@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="STUDYFLOW – A professional student task and study planner with DSA Lab. Manage tasks, track deadlines, plan studies, and explore Data Structures & Algorithms." />
+  <meta name="keywords" content="student planner, task manager, DSA, study planner, deadlines, algorithms" />
+  <meta name="author" content="STUDYFLOW" />
+  <title>STUDYFLOW – Student Task & Study Planner</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ====================== SIDEBAR ====================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="8" fill="url(#logoGrad)"/>
+            <path d="M8 12h16M8 16h12M8 20h8" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="24" cy="20" r="4" fill="white" opacity="0.9"/>
+            <defs>
+              <linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32">
+                <stop offset="0%" stop-color="#6C63FF"/>
+                <stop offset="100%" stop-color="#4ECDC4"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <span class="logo-text">STUDYFLOW</span>
+      </div>
+      <button class="sidebar-close" id="sidebarClose" aria-label="Close sidebar">✕</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ul>
+        <li>
+          <a href="#" class="nav-link active" data-section="dashboard" id="nav-dashboard">
+            <span class="nav-icon">⊞</span>
+            <span class="nav-label">Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-link" data-section="tasks" id="nav-tasks">
+            <span class="nav-icon">✓</span>
+            <span class="nav-label">My Tasks</span>
+            <span class="nav-badge" id="taskBadge">0</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-link" data-section="calendar" id="nav-calendar">
+            <span class="nav-icon">📅</span>
+            <span class="nav-label">Calendar</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-link" data-section="planner" id="nav-planner">
+            <span class="nav-icon">📚</span>
+            <span class="nav-label">Study Planner</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-link" data-section="dsa" id="nav-dsa">
+            <span class="nav-icon">⚙</span>
+            <span class="nav-label">DSA Lab</span>
+            <span class="nav-tag">NEW</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-link" data-section="progress" id="nav-progress">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label">Progress</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <span class="theme-icon" id="themeIcon">🌙</span>
+        <span id="themeLabel">Dark Mode</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ====================== OVERLAY ====================== -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- ====================== MAIN CONTENT ====================== -->
+  <main class="main-content" id="mainContent">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+        <div class="page-title" id="pageTitle">Dashboard</div>
+      </div>
+      <div class="topbar-right">
+        <div class="search-box" id="globalSearchBox">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="globalSearch" placeholder="Search tasks..." aria-label="Search tasks" />
+        </div>
+        <div class="avatar" title="Student">S</div>
+      </div>
+    </header>
+
+    <!-- ====================== DASHBOARD SECTION ====================== -->
+    <section class="section active" id="section-dashboard">
+      <div class="section-header">
+        <div>
+          <h1 class="section-title">Welcome back! 👋</h1>
+          <p class="section-subtitle">Here's your study overview for today.</p>
+        </div>
+        <button class="btn btn-primary" id="dashAddTask">
+          <span>+</span> Add Task
+        </button>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card total" id="statTotal">
+          <div class="stat-icon">📋</div>
+          <div class="stat-info">
+            <div class="stat-value" id="totalCount">0</div>
+            <div class="stat-label">Total Tasks</div>
+          </div>
+          <div class="stat-ring"></div>
+        </div>
+        <div class="stat-card completed" id="statCompleted">
+          <div class="stat-icon">✅</div>
+          <div class="stat-info">
+            <div class="stat-value" id="completedCount">0</div>
+            <div class="stat-label">Completed</div>
+          </div>
+        </div>
+        <div class="stat-card pending" id="statPending">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-info">
+            <div class="stat-value" id="pendingCount">0</div>
+            <div class="stat-label">Pending</div>
+          </div>
+        </div>
+        <div class="stat-card overdue" id="statOverdue">
+          <div class="stat-icon">🚨</div>
+          <div class="stat-info">
+            <div class="stat-value" id="overdueCount">0</div>
+            <div class="stat-label">Overdue</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-section">
+        <div class="progress-header">
+          <span>Overall Progress</span>
+          <span id="progressPct">0%</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Recent Tasks + Upcoming -->
+      <div class="dash-grid">
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h2>Recent Tasks</h2>
+            <a href="#" class="view-all" data-section="tasks">View All →</a>
+          </div>
+          <div id="recentTasksList" class="recent-tasks-list">
+            <p class="empty-msg">No tasks yet. Add your first task!</p>
+          </div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h2>Upcoming Deadlines</h2>
+            <a href="#" class="view-all" data-section="calendar">Calendar →</a>
+          </div>
+          <div id="upcomingList" class="upcoming-list">
+            <p class="empty-msg">No upcoming deadlines.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subject Distribution -->
+      <div class="dash-card full-width">
+        <div class="dash-card-header">
+          <h2>Tasks by Subject</h2>
+        </div>
+        <div id="subjectChart" class="subject-chart"></div>
+      </div>
+    </section>
+
+    <!-- ====================== TASKS SECTION ====================== -->
+    <section class="section" id="section-tasks">
+      <div class="section-header">
+        <div>
+          <h1 class="section-title">My Tasks</h1>
+          <p class="section-subtitle">Manage, filter and sort all your tasks.</p>
+        </div>
+        <button class="btn btn-primary" id="openAddTask">
+          <span>+</span> New Task
+        </button>
+      </div>
+
+      <!-- Filters -->
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label for="filterStatus">Status</label>
+          <select id="filterStatus">
+            <option value="all">All</option>
+            <option value="pending">Pending</option>
+            <option value="completed">Completed</option>
+            <option value="overdue">Overdue</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filterPriority">Priority</label>
+          <select id="filterPriority">
+            <option value="all">All</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filterSubject">Subject</label>
+          <select id="filterSubject">
+            <option value="all">All</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="sortBy">Sort By</label>
+          <select id="sortBy">
+            <option value="created">Date Created</option>
+            <option value="deadline">Deadline</option>
+            <option value="priority">Priority</option>
+            <option value="title">Title</option>
+          </select>
+        </div>
+        <button class="btn btn-outline" id="clearFilters">Clear Filters</button>
+      </div>
+
+      <!-- Task List -->
+      <div id="taskList" class="task-list">
+        <p class="empty-msg">No tasks found. Add your first task!</p>
+      </div>
+    </section>
+
+    <!-- ====================== CALENDAR SECTION ====================== -->
+    <section class="section" id="section-calendar">
+      <div class="section-header">
+        <div>
+          <h1 class="section-title">Calendar</h1>
+          <p class="section-subtitle">View tasks and deadlines by date.</p>
+        </div>
+        <div class="cal-nav">
+          <button class="btn btn-outline" id="calPrev">‹ Prev</button>
+          <span id="calMonthYear" class="cal-month-label">Month Year</span>
+          <button class="btn btn-outline" id="calNext">Next ›</button>
+        </div>
+      </div>
+      <div class="calendar-grid-wrap">
+        <div class="cal-days-header">
+          <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+        </div>
+        <div id="calGrid" class="cal-grid"></div>
+      </div>
+      <div class="cal-legend">
+        <span class="legend-item"><span class="dot high"></span> High Priority</span>
+        <span class="legend-item"><span class="dot medium"></span> Medium Priority</span>
+        <span class="legend-item"><span class="dot low"></span> Low Priority</span>
+        <span class="legend-item"><span class="dot completed-dot"></span> Completed</span>
+      </div>
+    </section>
+
+    <!-- ====================== STUDY PLANNER SECTION ====================== -->
+    <section class="section" id="section-planner">
+      <div class="section-header">
+        <div>
+          <h1 class="section-title">Study Planner</h1>
+          <p class="section-subtitle">Plan your weekly study schedule.</p>
+        </div>
+        <button class="btn btn-primary" id="openAddSession">
+          <span>+</span> Add Session
+        </button>
+      </div>
+
+      <div class="planner-grid">
+        <div class="day-column" data-day="Mon">
+          <div class="day-header">Mon</div>
+          <div class="day-slots" id="slots-Mon"></div>
+        </div>
+        <div class="day-column" data-day="Tue">
+          <div class="day-header">Tue</div>
+          <div class="day-slots" id="slots-Tue"></div>
+        </div>
+        <div class="day-column" data-day="Wed">
+          <div class="day-header">Wed</div>
+          <div class="day-slots" id="slots-Wed"></div>
+        </div>
+        <div class="day-column" data-day="Thu">
+          <div class="day-header">Thu</div>
+          <div class="day-slots" id="slots-Thu"></div>
+        </div>
+        <div class="day-column" data-day="Fri">
+          <div class="day-header">Fri</div>
+          <div class="day-slots" id="slots-Fri"></div>
+        </div>
+        <div class="day-column" data-day="Sat">
+          <div class="day-header">Sat</div>
+          <div class="day-slots" id="slots-Sat"></div>
+        </div>
+        <div class="day-column" data-day="Sun">
+          <div class="day-header">Sun</div>
+          <div class="day-slots" id="slots-Sun"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== DSA LAB SECTION ====================== -->
+    <section class="section" id="section-dsa">
+      <div class="section-header">
+        <div>
+          <h1 class="section-title">DSA Lab ⚙</h1>
+          <p class="section-subtitle">Interactive Data Structures & Algorithms visualizer.</p>
+        </div>
+      </div>
+
+      <div class="dsa-tabs">
+        <button class="dsa-tab active" data-algo="linear">Linear Search</button>
+        <button class="dsa-tab" data-algo="binary">Binary Search</button>
+        <button class="dsa-tab" data-algo="bubble">Bubble Sort</button>
+        <button class="dsa-tab" data-algo="stack">Stack</button>
+        <button class="dsa-tab" data-algo="queue">Queue</button>
+      </div>
+
+      <!-- Linear Search -->
+      <div class="dsa-panel active" id="dsa-linear">
+        <div class="dsa-info">
+          <h2>Linear Search</h2>
+          <p>Sequentially checks each element until a match is found. <strong>Time: O(n)</strong> | <strong>Space: O(1)</strong></p>
+        </div>
+        <div class="dsa-controls">
+          <input type="text" id="linearArray" placeholder="e.g. 5, 3, 8, 1, 9, 2" value="5, 3, 8, 1, 9, 2, 7, 4" />
+          <input type="number" id="linearTarget" placeholder="Target value" value="9" />
+          <button class="btn btn-primary" id="runLinear">Run Search</button>
+          <button class="btn btn-outline" id="resetLinear">Reset</button>
+        </div>
+        <div class="dsa-visualizer" id="linearViz"></div>
+        <div class="dsa-output" id="linearOutput"></div>
+        <div class="dsa-code-wrap">
+          <h3>Pseudocode</h3>
+          <pre class="dsa-code"><code>function linearSearch(arr, target):
+  for i = 0 to arr.length - 1:
+    if arr[i] == target:
+      return i       // Found at index i
+  return -1          // Not found</code></pre>
+        </div>
+      </div>
+
+      <!-- Binary Search -->
+      <div class="dsa-panel" id="dsa-binary">
+        <div class="dsa-info">
+          <h2>Binary Search</h2>
+          <p>Requires sorted array. Halves the search space each step. <strong>Time: O(log n)</strong> | <strong>Space: O(1)</strong></p>
+        </div>
+        <div class="dsa-controls">
+          <input type="text" id="binaryArray" placeholder="Sorted array e.g. 1, 3, 5, 7, 9" value="1, 3, 5, 7, 9, 11, 13, 15" />
+          <input type="number" id="binaryTarget" placeholder="Target value" value="7" />
+          <button class="btn btn-primary" id="runBinary">Run Search</button>
+          <button class="btn btn-outline" id="resetBinary">Reset</button>
+        </div>
+        <div class="dsa-visualizer" id="binaryViz"></div>
+        <div class="dsa-output" id="binaryOutput"></div>
+        <div class="dsa-code-wrap">
+          <h3>Pseudocode</h3>
+          <pre class="dsa-code"><code>function binarySearch(arr, target):
+  left = 0, right = arr.length - 1
+  while left <= right:
+    mid = (left + right) / 2
+    if arr[mid] == target: return mid
+    elif arr[mid] < target: left = mid + 1
+    else: right = mid - 1
+  return -1</code></pre>
+        </div>
+      </div>
+
+      <!-- Bubble Sort -->
+      <div class="dsa-panel" id="dsa-bubble">
+        <div class="dsa-info">
+          <h2>Bubble Sort</h2>
+          <p>Repeatedly swaps adjacent elements if out of order. <strong>Time: O(n²)</strong> | <strong>Space: O(1)</strong></p>
+        </div>
+        <div class="dsa-controls">
+          <input type="text" id="bubbleArray" placeholder="e.g. 5, 3, 8, 1, 9" value="5, 3, 8, 1, 9, 2, 7, 4" />
+          <button class="btn btn-primary" id="runBubble">Run Sort</button>
+          <button class="btn btn-outline" id="resetBubble">Reset</button>
+        </div>
+        <div class="dsa-bars" id="bubbleViz"></div>
+        <div class="dsa-output" id="bubbleOutput"></div>
+        <div class="dsa-code-wrap">
+          <h3>Pseudocode</h3>
+          <pre class="dsa-code"><code>function bubbleSort(arr):
+  n = arr.length
+  for i = 0 to n-1:
+    for j = 0 to n-i-2:
+      if arr[j] > arr[j+1]:
+        swap(arr[j], arr[j+1])
+  return arr</code></pre>
+        </div>
+      </div>
+
+      <!-- Stack -->
+      <div class="dsa-panel" id="dsa-stack">
+        <div class="dsa-info">
+          <h2>Stack (LIFO)</h2>
+          <p>Last In, First Out structure. Supports push, pop, and peek operations. <strong>Time: O(1)</strong></p>
+        </div>
+        <div class="dsa-controls">
+          <input type="text" id="stackInput" placeholder="Value to push" />
+          <button class="btn btn-primary" id="stackPush">Push</button>
+          <button class="btn btn-secondary" id="stackPop">Pop</button>
+          <button class="btn btn-outline" id="stackPeek">Peek</button>
+          <button class="btn btn-outline" id="stackClear">Clear</button>
+        </div>
+        <div class="stack-viz" id="stackViz">
+          <div class="stack-label">← TOP</div>
+          <div class="stack-items" id="stackItems"></div>
+          <div class="stack-base">BOTTOM</div>
+        </div>
+        <div class="dsa-output" id="stackOutput"></div>
+        <div class="dsa-code-wrap">
+          <h3>Pseudocode</h3>
+          <pre class="dsa-code"><code>Stack operations:
+  push(val) → add val to top
+  pop()     → remove and return top
+  peek()    → return top without removing
+  isEmpty() → return stack.length === 0</code></pre>
+        </div>
+      </div>
+
+      <!-- Queue -->
+      <div class="dsa-panel" id="dsa-queue">
+        <div class="dsa-info">
+          <h2>Queue (FIFO)</h2>
+          <p>First In, First Out structure. Supports enqueue and dequeue operations. <strong>Time: O(1)</strong></p>
+        </div>
+        <div class="dsa-controls">
+          <input type="text" id="queueInput" placeholder="Value to enqueue" />
+          <button class="btn btn-primary" id="queueEnqueue">Enqueue</button>
+          <button class="btn btn-secondary" id="queueDequeue">Dequeue</button>
+          <button class="btn btn-outline" id="queueFront">Front</button>
+          <button class="btn btn-outline" id="queueClear">Clear</button>
+        </div>
+        <div class="queue-viz" id="queueViz">
+          <div class="queue-label-front">FRONT →</div>
+          <div class="queue-items" id="queueItems"></div>
+          <div class="queue-label-rear">← REAR</div>
+        </div>
+        <div class="dsa-output" id="queueOutput"></div>
+        <div class="dsa-code-wrap">
+          <h3>Pseudocode</h3>
+          <pre class="dsa-code"><code>Queue operations:
+  enqueue(val) → add val to rear
+  dequeue()    → remove and return front
+  front()      → return front without removing
+  isEmpty()    → return queue.length === 0</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== PROGRESS SECTION ====================== -->
+    <section class="section" id="section-progress">
+      <div class="section-header">
+        <div>
+          <h1 class="section-title">Progress Summary</h1>
+          <p class="section-subtitle">Track your study performance and achievements.</p>
+        </div>
+      </div>
+
+      <div class="progress-cards">
+        <div class="prog-card">
+          <div class="prog-card-icon">🏆</div>
+          <div class="prog-card-title">Completion Rate</div>
+          <div class="prog-card-value" id="progRate">0%</div>
+          <div class="prog-mini-bar"><div id="progRateBar" style="width:0%"></div></div>
+        </div>
+        <div class="prog-card">
+          <div class="prog-card-icon">🔥</div>
+          <div class="prog-card-title">Tasks This Week</div>
+          <div class="prog-card-value" id="progWeek">0</div>
+        </div>
+        <div class="prog-card">
+          <div class="prog-card-icon">⚡</div>
+          <div class="prog-card-title">High Priority Done</div>
+          <div class="prog-card-value" id="progHighDone">0</div>
+        </div>
+        <div class="prog-card">
+          <div class="prog-card-icon">📚</div>
+          <div class="prog-card-title">Subjects Active</div>
+          <div class="prog-card-value" id="progSubjects">0</div>
+        </div>
+      </div>
+
+      <!-- Subject-wise Progress -->
+      <div class="dash-card full-width">
+        <div class="dash-card-header"><h2>Subject-wise Progress</h2></div>
+        <div id="subjectProgress" class="subject-progress-list"></div>
+      </div>
+
+      <!-- Priority Breakdown -->
+      <div class="dash-card full-width">
+        <div class="dash-card-header"><h2>Priority Breakdown</h2></div>
+        <div class="priority-breakdown" id="priorityBreakdown"></div>
+      </div>
+
+      <!-- Achievements -->
+      <div class="dash-card full-width">
+        <div class="dash-card-header"><h2>Achievements 🎯</h2></div>
+        <div class="achievements-grid" id="achievementsGrid"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ====================== TASK MODAL ====================== -->
+  <div class="modal-backdrop" id="taskModal">
+    <div class="modal" role="dialog" aria-labelledby="modalTitle" aria-modal="true">
+      <div class="modal-header">
+        <h2 id="modalTitle">Add New Task</h2>
+        <button class="modal-close" id="modalClose" aria-label="Close modal">✕</button>
+      </div>
+      <form id="taskForm" class="modal-body" novalidate>
+        <div class="form-row">
+          <div class="form-group full">
+            <label for="taskTitle">Task Title <span class="required">*</span></label>
+            <input type="text" id="taskTitle" placeholder="e.g. Complete DSA Assignment" required maxlength="100" />
+            <span class="field-hint">Max 100 characters</span>
+            <span class="field-error" id="taskTitleError"></span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full">
+            <label for="taskDesc">Description</label>
+            <textarea id="taskDesc" placeholder="Brief description of the task..." rows="3" maxlength="500"></textarea>
+            <span class="field-hint">Max 500 characters</span>
+          </div>
+        </div>
+        <div class="form-row two-col">
+          <div class="form-group">
+            <label for="taskSubject">Subject <span class="required">*</span></label>
+            <select id="taskSubject" required>
+              <option value="">Select subject</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Physics">Physics</option>
+              <option value="Chemistry">Chemistry</option>
+              <option value="Biology">Biology</option>
+              <option value="English">English</option>
+              <option value="History">History</option>
+              <option value="Economics">Economics</option>
+              <option value="Other">Other</option>
+            </select>
+            <span class="field-error" id="taskSubjectError"></span>
+          </div>
+          <div class="form-group">
+            <label for="taskPriority">Priority <span class="required">*</span></label>
+            <select id="taskPriority" required>
+              <option value="">Select priority</option>
+              <option value="high">🔴 High</option>
+              <option value="medium">🟡 Medium</option>
+              <option value="low">🟢 Low</option>
+            </select>
+            <span class="field-error" id="taskPriorityError"></span>
+          </div>
+        </div>
+        <div class="form-row two-col">
+          <div class="form-group">
+            <label for="taskDeadline">Deadline <span class="required">*</span></label>
+            <input type="datetime-local" id="taskDeadline" required />
+            <span class="field-error" id="taskDeadlineError"></span>
+          </div>
+          <div class="form-group">
+            <label for="taskStatus">Status</label>
+            <select id="taskStatus">
+              <option value="pending">⏳ Pending</option>
+              <option value="completed">✅ Completed</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" id="cancelTask">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveTask">Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================== SESSION MODAL (PLANNER) ====================== -->
+  <div class="modal-backdrop" id="sessionModal">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2>Add Study Session</h2>
+        <button class="modal-close" id="sessionModalClose">✕</button>
+      </div>
+      <form id="sessionForm" class="modal-body" novalidate>
+        <div class="form-row">
+          <div class="form-group full">
+            <label for="sessionSubject">Subject <span class="required">*</span></label>
+            <input type="text" id="sessionSubject" placeholder="e.g. Data Structures" required />
+            <span class="field-error" id="sessionSubjectError"></span>
+          </div>
+        </div>
+        <div class="form-row two-col">
+          <div class="form-group">
+            <label for="sessionDay">Day <span class="required">*</span></label>
+            <select id="sessionDay" required>
+              <option value="">Select day</option>
+              <option value="Mon">Monday</option>
+              <option value="Tue">Tuesday</option>
+              <option value="Wed">Wednesday</option>
+              <option value="Thu">Thursday</option>
+              <option value="Fri">Friday</option>
+              <option value="Sat">Saturday</option>
+              <option value="Sun">Sunday</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="sessionColor">Color</label>
+            <select id="sessionColor">
+              <option value="purple">Purple</option>
+              <option value="teal">Teal</option>
+              <option value="orange">Orange</option>
+              <option value="pink">Pink</option>
+              <option value="blue">Blue</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row two-col">
+          <div class="form-group">
+            <label for="sessionStart">Start Time <span class="required">*</span></label>
+            <input type="time" id="sessionStart" required />
+          </div>
+          <div class="form-group">
+            <label for="sessionEnd">End Time <span class="required">*</span></label>
+            <input type="time" id="sessionEnd" required />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" id="cancelSession">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Session</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================== TOAST NOTIFICATIONS ====================== -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- ====================== CONFIRM DIALOG ====================== -->
+  <div class="modal-backdrop" id="confirmModal">
+    <div class="modal confirm-modal" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2>Confirm Delete</h2>
+      </div>
+      <div class="modal-body">
+        <p id="confirmMsg">Are you sure you want to delete this task? This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="confirmCancel">Cancel</button>
+        <button class="btn btn-danger" id="confirmOk">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main JS -->
+  <script src="app.js"></script>
+</body>
+</html>
